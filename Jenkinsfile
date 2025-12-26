@@ -5,13 +5,14 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git ' https://github.com/Vuthy-Tourn/springboot-maven-test'
+                git branch: 'main',
+                    url: 'https://github.com/Vuthy-Tourn/springboot-maven-test.git'
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t jenkins-spring-pipeline .'
+                sh 'docker build -t jenkins-spring-maven-pipeline .'
             }
         }
 
@@ -23,7 +24,7 @@ pipeline {
 
                     docker run -d -p 8081:8081 \
                         --name springboot-maven \
-                        jenkins-spring-pipeline
+                        jenkins-spring-maven-pipeline
                 '''
             }
         }
