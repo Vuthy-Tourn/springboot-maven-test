@@ -10,21 +10,12 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t jenkins-spring-maven-pipeline .'
-            }
-        }
-
-        stage('Deploy') {
+        stage('Build & Deploy') {
             steps {
                 sh '''
-                    docker stop springboot-maven || true
-                    docker rm springboot-maven || true
-
-                    docker run -d -p 8081:8081 \
-                        --name springboot-maven \
-                        jenkins-spring-maven-pipeline
+                    docker-compose down
+                    docker-compose build
+                    docker-compose up -d
                 '''
             }
         }
@@ -32,10 +23,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Spring Boot Docker Build & Deploy Successful'
+            echo '✅ Spring Boot + PostgreSQL deployed successfully'
         }
         failure {
-            echo '❌ Spring Boot Pipeline Failed'
+            echo '❌ Pipeline failed'
         }
     }
 }
